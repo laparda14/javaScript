@@ -1,0 +1,43 @@
+<!DOCTYPE>
+
+
+<html>
+
+<head>
+
+<script type="text/javascript" src="simpleGame.js"></script>
+
+<script type="text/javascript">
+
+var timer;
+
+function a()
+{
+	document.getElementById("tester").innerHTML = timer.getElapsedTime();		
+}
+
+
+
+function init()
+{
+	timer = new Timer();
+	timer.reset();
+}
+
+function update()
+{	
+	a();
+}
+
+</script>
+
+</head>
+
+
+<body onload="init()">
+
+
+</body>
+<div id="tester"></div>
+<div id="tester2"></div>
+</html>

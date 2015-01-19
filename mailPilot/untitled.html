@@ -1,0 +1,216 @@
+<!DOCTYPE>
+
+<!-- 1) Ensure that cloud is always formed far enough from plane 
+	 2) get Score showing working
+	 3) add Reset button 
+-->
+
+
+
+<html>
+
+<head>
+
+<script type="text/javascript" src="simpleGame.js"></script>
+
+<script type="text/javascript">
+
+var scene;
+var sea;
+var plane;
+var currentSpeed;
+var xDiff;
+var yDiff;
+var numClouds = 5;
+clouds = new Array(numClouds);
+var time;
+
+function Sea()
+{
+	tsea = new Sprite(scene, "ocean.gif", 800, 550);
+	tsea.setPosition(400,275);
+	tsea.setSpeed(0);
+	return tsea;
+}
+
+function Cloud()
+{
+	tcloud = new Sprite(scene, "Cloud.gif", 30, 30);
+	tcloud.setSpeed(0);
+	tcloud.setPosition(5 + Math.random() * 747, Math.random() * 540 + 5);
+	tcloud.setDY(1);
+	return tcloud;
+
+}
+
+function setupClouds()
+{
+	var i;
+	for(i = 0; i < numClouds; i++)
+	{
+		clouds[i] = new Cloud();
+	}
+
+}
+
+function collisionChecker()
+{
+	var i;
+	for(i = 0; i < clouds.length; i++)
+	{
+		if(plane.collidesWith(clouds[i]))
+		{
+			scene.stop();
+		}
+	}
+}
+
+function randomizeClouds()
+{	
+	var i;
+
+	if((Math.abs((time.getElapsedTime() % 0.5) - 0) < 0.009) && (clouds.length < 50))
+	{
+		excloud1 = new Cloud();
+		excloud2 = new Cloud();
+		clouds.push(excloud1);
+		clouds.push(excloud2);
+	}
+
+	numClouds = clouds.length;
+
+	for(i = 0; i < numClouds; i++)
+	{
+		if(clouds[i].x > 775)
+		{
+			clouds[i].setSpeed(0);
+			clouds[i].setDX(0);
+			clouds[i].addVector(270,3);
+		}	
+		else if(clouds[i].y > 525)
+		{
+			clouds[i].setSpeed(0);
+			clouds[i].setDY(0);
+			clouds[i].addVector(0,3);
+
+		}
+		else if(clouds[i].x < 25)
+		{
+			clouds[i].setSpeed(0);
+			clouds[i].setDX(0);
+			clouds[i].addVector(90,3);
+		}
+		else if(clouds[i].y < 25)
+		{	
+			clouds[i].setSpeed(0);
+			clouds[i].setDY(0);
+			clouds[i].addVector(180,3);		
+		} 
+		clouds[i].addVector(Math.random() * 360, 3);
+		currentSpeed = clouds[i].getSpeed();
+		if(currentSpeed > 10)
+		{
+			clouds[i].setSpeed(0);
+		}
+		else
+		{
+			clouds[i].addVector(Math.random() * 360, 2);
+		}
+	}
+}
+
+function updateClouds()
+{
+	var i;
+	for(i = 0; i < numClouds; i++)
+	{
+		clouds[i].update();
+	}
+}
+
+function Plane()
+{
+	tfly = new Sprite(scene, "plane.png", 50, 50);
+	tfly.setSpeed(0);
+	tfly.setPosition(400,275);
+	tfly.setBoundAction(STOP);
+
+	tfly.limiter = function()
+	{	
+		if(this.y < 50)		
+		{
+			this.setDY(0);
+			this.setY(50);
+		}
+		if(this.y > 500)
+		{
+			this.setDY(0);
+			this.setY(500);
+		}
+		if(this.x < 50)
+		{
+			this.setDX(0);
+			this.setX(50);
+		}
+		if(this.x > 750)
+		{
+			this.setDX(0);
+			this.setX(750);
+		}
+	}
+	tfly.movement = function()
+	{			
+			if(keysDown[K_UP])  
+			{
+				this.addVector(0,0.4);		
+			}
+			if(keysDown[K_DOWN])
+			{
+				this.addVector(180,0.4);
+			}
+			if(keysDown[K_LEFT])
+			{
+				this.setDX(this.dx - 0.4); 
+			}
+			if(keysDown[K_RIGHT])
+			{
+				this.setDX(this.dx + 0.4);
+			}
+	}
+	return tfly;
+}
+
+function init()
+{
+	scene = new Scene();
+	scene.setSize(800,550);
+	sea = new Sea();
+	setupClouds();
+	plane = new Plane();
+	time = new Timer();
+	time.reset();
+	scene.start();
+}
+
+function update()
+{	
+	scene.clear();
+	plane.limiter();
+	collisionChecker();
+	plane.movement();
+	randomizeClouds();
+	sea.update();
+	updateClouds();
+	plane.update();	
+}
+
+</script>
+
+</head>
+
+
+<body onload="init()">
+
+</body>
+
+</html>

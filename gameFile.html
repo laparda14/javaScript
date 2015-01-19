@@ -1,0 +1,91 @@
+<!DOCTYPE>
+
+<html>
+
+<head>
+<script type="text/javascript" src="simpleGame.js"></script>
+<script type="text/javascript" src="cannon.js"></script>
+<script type="text/javascript" src="missile.js"></script>
+<script type="text/javascript" src="enemy.js"></script>
+<script type="text/javascript">
+
+var backgroundHeight = 450;
+var backgroundWidth  = 750;
+var missileLabelText = "Number of missiles left: "
+var enemyCapacityLabelText1 = " enemies have gone into your city. You can let "
+var enemyCapacityLabelText2 = " more enemies pass." 
+var timer;
+var enemy;
+var background;
+var cannon;
+var missile;
+var soundclip;
+
+function Background()
+{
+	var tbackground = new Sprite(scene, "nightCity.png", backgroundWidth, backgroundHeight);
+	tbackground.setSpeed(0);
+	tbackground.setPosition((backgroundWidth/2),(backgroundHeight/2));
+	return tbackground;
+}
+
+function missilesLeftDisp()
+{
+	document.getElementById("missileLabel").innerHTML = missileLabelText + shotsLeft;
+	if(shotsLeft == 0)
+	{
+		document.getElementById("missileLabel").innerHTML = "Missiles over!";
+	}
+}
+
+/*function enemyCapLeftDisp()
+{
+	document.getElementById("enemyCapacityLabel").innerHTML = cityHits + enemyCapacityLabel + enemyCapacityLeft + enemyCapacityLabelText2;
+}*/
+
+function init() 
+{
+	scene = new Scene();
+	scene.setSize(backgroundWidth,backgroundHeight);
+	background = new Background();
+	cannon = new Cannon();
+	setMissileArray();
+	setupEnemies();
+	timer = new Timer();
+	timer.reset();
+	soundClip = new Sound("Mission Impossible.mp3");
+	scene.start();
+}
+
+function update()
+{
+	scene.clear();
+	soundClip.play();
+	collisionChecker();
+	//enemyCapLeftDisp();
+	cannon.checkKeys();
+	cannon.boundChecker();
+	missileDone();
+	missilesOver();
+	increaseEnemies();
+	fire();
+	missilesLeftDisp();
+	baseStopper();
+	background.update();
+	cannon.update();
+	updateMissileArray();
+	updateEnemies();
+}
+
+</script>
+
+</head>
+
+<body onload="init()">
+	<div id="scoreLabel">Your city is under attack. Save it!</div>
+	<div id="missileLabel"></div>
+	<div id="enemyCapacityLabel"></div>
+</body>
+
+
+</html>
